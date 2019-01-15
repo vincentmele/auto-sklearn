@@ -232,7 +232,11 @@ class TrainEvaluator(AbstractEvaluator):
             self.Y_optimization = Y_targets
             loss = self._loss(Y_targets, Y_optimization_pred)
             self.Y_actual_train = Y_train_targets
-
+            
+            # Fix for TimeSeriesSplit. Still not sure why this needs to happen.
+            self.Y_actual_train = self.Y_actual_train[~np.isnan(self.Y_actual_train)]
+            Y_train_pred = Y_train_pred[~np.isnan(Y_train_pred).any(axis=1)]
+            
             if self.cv_folds > 1:
                 self.model = self._get_model()
                 # Bad style, but necessary for unit testing that self.model is
