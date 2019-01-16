@@ -6,6 +6,7 @@ import random
 import lockfile
 import numpy as np
 import pickle
+import joblib
 import shutil
 from autosklearn.util import logging_ as logging
 
@@ -317,7 +318,7 @@ class Backend(object):
 
         with tempfile.NamedTemporaryFile('wb', dir=os.path.dirname(
                 filepath), delete=False) as fh:
-            pickle.dump(model, fh, -1)
+            joblib.dump(model, fh, 3, -1)
             tempname = fh.name
 
         os.rename(tempname, filepath)
@@ -375,7 +376,7 @@ class Backend(object):
         model_file_name = '%s.%s.model' % (seed, idx)
         model_file_path = os.path.join(model_directory, model_file_name)
         with open(model_file_path, 'rb') as fh:
-            return pickle.load(fh)
+            return joblib.load(fh)
 
     def get_ensemble_dir(self):
         return os.path.join(self.internals_directory, 'ensembles')
@@ -397,7 +398,7 @@ class Backend(object):
             indices_files.sort(key=lambda f: time.ctime(os.path.getmtime(f)))
 
         with open(indices_files[-1], 'rb') as fh:
-            ensemble_members_run_numbers = pickle.load(fh)
+            ensemble_members_run_numbers = joblib.load(fh)
 
         return ensemble_members_run_numbers
 
@@ -413,7 +414,7 @@ class Backend(object):
         )
         with tempfile.NamedTemporaryFile('wb', dir=os.path.dirname(
                 filepath), delete=False) as fh:
-            pickle.dump(ensemble, fh)
+            joblib.dump(ensemble, fh)
             tempname = fh.name
         os.rename(tempname, filepath)
 
